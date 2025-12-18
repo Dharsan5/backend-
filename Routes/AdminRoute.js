@@ -41,6 +41,8 @@ router.post("/login",async(req,res)=>{
         if(verifypassword==false){
             return res.status(401).json({message:"Invalid credentials"});
         }
+        const  token=await jwt.sign({userId:user._id}, "BACKEND1812");
+        res.cookie("token",token);
         res.json({message:"Login successful",data:user});
     }catch(err){
         res.status(500).json({message:err.message});

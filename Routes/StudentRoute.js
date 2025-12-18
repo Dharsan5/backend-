@@ -5,36 +5,12 @@ const router = express.Router();
 const validator = require("validator");
 const studentModel = require('../models/StudentModel');
 const jwt = require("jsonwebtoken");
+const auth = require('../Middleware/Auth');
 
 
 
 
-// auth midlleware
-const authMiddleware = async (req, res, next) => {
-    try {
-        const { token } = req.cookies;
-        console.log(token);
-        if (!token) {
-            return res.json({ message: "no token found" });
-        }
-        const decoded = await jwt.verify(token, "BACKEND1812");
-        console.log(decoded);
-        if (!decoded) {
-            return res.json({ message: "invalid token" });
-        }
-        const { userId } = decoded;
-        const st = await studentModel.findById(userId);
-        console.log(st);
-        if (!st) {
-            return res.json({ message: "no student found" });
-        }
-        next();
-
-    } catch (err) {
-        res.json({ message: err.message });
-    }
-};
-
+// auth middleware
 
 
 
@@ -135,7 +111,7 @@ router.get("/get", (req, res) => {
     // console.log("get method");
     res.send("get method");
 })
-router.get("/stud", authMiddleware, async (req, res) => {
+router.get("/stud", auth, async (req, res) => {
     try {
         const students = await studentModel.find();
         res.json({ message: "students data", data: students });
@@ -144,9 +120,14 @@ router.get("/stud", authMiddleware, async (req, res) => {
     }
 });
 //get student by id
-router.get("/student/:id", authMiddleware, async (req, res) => {
+router.get("/student/:id", auth, async (req, res) => {
     try {
+        const loggeduser = req.user;
+        console.log(loggeduser);
         const { id } = req.params;
+        if (loggeduser !== id) {
+            return res.json({ message: "Access denied" });
+        }
         const stu = await studentModel.findById(id);
         res.json({ message: "student found", data: stu });
     } catch (err) {
@@ -178,7 +159,7 @@ router.get("/student/:id", authMiddleware, async (req, res) => {
 //     }
 // });
 //put method to replace
-router.put("/replace/:id", authMiddleware, async (req, res) => {
+router.put("/replace/:id", auth, async (req, res) => {
     try {
         const { id } = req.params;
         const { name, email, dept } = req.body;
@@ -194,7 +175,7 @@ router.put("/replace/:id", authMiddleware, async (req, res) => {
 
 });
 
-router.delete("/delete/:id", authMiddleware, async (req, res) => {
+router.delete("/delete/:id", auth, async (req, res) => {
     try {
         const { id } = req.params;//req.body is also used to get data from request body
         const deleted = await studentModel.findByIdAndDelete(id);

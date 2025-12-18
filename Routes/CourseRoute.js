@@ -2,13 +2,14 @@ const express=require("express");
 const mongoose=require("mongoose");
 const router = express.Router();
 const courseModel=require("../models/CourseModel");
+const auth = require("../Middleware/Auth");
 
 
 router.get("/getcourse",(req, res) => {
     // console.log("get method");
     res.send("get course");
 })
-router.get("/studcourse",async (req, res) => {
+router.get("/studcourse", auth, async (req, res) => {
     try {
         const courses = await courseModel.find({});
         if(!courses){
@@ -19,7 +20,7 @@ router.get("/studcourse",async (req, res) => {
         res.status(500).send(err.message);
     }
 });
-router.post("/addcourse", async (req, res) => {
+router.post("/addcourse",auth, async (req, res) => {
     try {
 
         const { id, name } = req.body;
@@ -35,7 +36,7 @@ router.post("/addcourse", async (req, res) => {
     }
 });
 
-router.put("/replacecourse/:id", async(req, res) => {
+router.put("/replacecourse/:id", auth, async(req, res) => {
     try{
     const { id } = req.params;
     const { name } = req.body;
@@ -48,7 +49,7 @@ router.put("/replacecourse/:id", async(req, res) => {
 }
 });
 
-router.delete("/delete/:id", async(req, res) => {
+router.delete("/delete/:id", auth, async(req, res) => {
     try{
     const { id } = req.params;//req.body is also used to get data from request body
     const deleted = await courseModel.findByIdAndDelete(id);
