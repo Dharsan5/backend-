@@ -107,7 +107,12 @@ router.get("/stud",async (req, res) => {
         }
         const decoded=await jwt.verify(token,"BACKEND1812");
         console.log(decoded);
-        const st = await studentModel.find({});
+        if(!decoded){
+            return res.json({message:"invalid token"});
+        }
+        const {userId}=decoded;
+        const st = await studentModel.findById(userId);
+        console.log(st);
         if(!st){
             return res.json({message:"no student found"});
         }
