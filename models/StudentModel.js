@@ -26,11 +26,13 @@ const studentschema = new mongoose.Schema({
         type:String,
         enum:['student','admin'],
     
+    },
+    assignedcoureses: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'stdcourse'
     }
-},
-    {
-        timestamps: true
-    }
-);
+}, {
+    timestamps: true
+});
 const studentModel = mongoose.model("student", studentschema);
 module.exports = studentModel;

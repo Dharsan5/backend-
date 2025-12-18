@@ -5,13 +5,14 @@ const app = express();
 const jwt=require("jsonwebtoken");
 const cookieParser=require("cookie-parser");
 app.use(cookieParser());
+const cors = require("cors");
 
 app.use(express.json());//middleware to parse json data from request body
 const studentRoute = require('./Routes/StudentRoute');
 const courseRoute = require('./Routes/CourseRoute');
 const adminRoute=require('./Routes/AdminRoute');
 
-
+app.use(cors());
 app.use("/students", studentRoute);
 app.use("/courses", courseRoute);
 app.use("/admin",adminRoute);
