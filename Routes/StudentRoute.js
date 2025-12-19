@@ -189,4 +189,27 @@ router.delete("/delete/:id", auth, async (req, res) => {
     }
 });
 
+router.patch("/assigncourse/:SID", auth, async (req, res) => {
+    try {
+        const { SID } = req.params;
+        const { courseID } = req.body;
+        const role = req.role
+        if (role != 'admin') {
+            return res.send("Admin only have permission")
+        }
+        console.log(role)
+        const student = await studentModel.findById(SID)
+        if (!student) {
+            return res.json({ error: "no student found" })
+        }
+        console.log(courseID);
+        const assign = await studentModel.findByIdAndUpdate(SID, { AssignedCourse: courseID });
+        console.log(assign);
+        res.json("course successfull")
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+
 module.exports = router;

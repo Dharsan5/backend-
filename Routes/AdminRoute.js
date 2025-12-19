@@ -56,17 +56,21 @@ router.post("/adminlogin",async(req,res)=>{
 //patch route to update admin details alreaday present in database after i need to aasign course to student 
 router.patch("/assigncourse/:sid",auth,async(req, res) => {
     try{
+        console.log("Assign course route accessed");
         const {sid}=req.params;
+        console.log("Student ID:", sid);
         const {courseId}=req.body;
+        console.log("Course ID:", courseId);
         const student=await studentModel.findById(sid);
         if(!student){
             return res.json({message:"student not found"});
         }
+        console.log("Student found:", student);
         const coursedetails={
             id:courseId.id,
             name:courseId.name
         }
-        const assign=await studentModel.findByIdAndUpdate(sid,{$push:{AssignedCourses:coursedetails}},{new:true});
+        const assign=await studentModel.findByIdAndUpdate(sid,{$push:{AssignedCourses:courseId}},{new:true});
          if(!assign){
             return res.json({message:"course not assigned"});
         }

@@ -27,7 +27,7 @@ const studentschema = new mongoose.Schema({
         enum:['student','admin'],
     
     },
-    assignedcoureses: {
+    AssignedCourses: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'stdcourse'
     }
