@@ -111,7 +111,7 @@ router.get("/get", (req, res) => {
     // console.log("get method");
     res.send("get method");
 })
-router.get("/stud", auth, async (req, res) => {
+router.get("/stud", auth,async (req, res) => {           //auth remove here for testing frontend conole
     try {
         const students = await studentModel.find();
         res.json({ message: "students data", data: students });
